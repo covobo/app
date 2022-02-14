@@ -14,6 +14,12 @@ class Template extends BaseTemplate
     #[Column(type: 'string')]
     private string $mime;
 
+    public function __construct(string $mime, string $slug, string $content)
+    {
+        $this->mime = $mime;
+        parent::__construct($slug, $content);
+    }
+
     public function getMime(): string
     {
         return $this->mime;

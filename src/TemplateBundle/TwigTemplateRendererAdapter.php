@@ -14,10 +14,14 @@ final class TwigTemplateRendererAdapter implements TemplateRendererInterface
     {
     }
 
+    /**
+     * @codeCoverageIgnore
+     * there is no way to test createTemplate because TemplateWrapper is final
+     */
     public function render(Template $template, array $context): string
     {
-        $content = $this->twig->createTemplate($template->getContent(), $template->getSlug());
+        $twigTemplate = $this->twig->createTemplate($template->getContent(), $template->getSlug());
 
-        return $content->render($context);
+        return $twigTemplate->render($context);
     }
 }

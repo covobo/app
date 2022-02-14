@@ -33,6 +33,12 @@ final class TemplateRenderRequest
     #[Serializer\Type(name: "array<string, string>")]
     private array $variables;
 
+    public function __construct(string $slug, array $variables)
+    {
+        $this->slug = $slug;
+        $this->variables = $variables;
+    }
+
     /**
      * @return string
      */

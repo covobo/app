@@ -7,8 +7,13 @@ services:
         tags:
             - { name: controller.service_arguments }
 
+    SunFinanceGroup\Notificator\TemplateService\TemplateRendererInterface:
+        alias: SunFinanceGroup\Notificator\TemplateBundle\TwigTemplateRendererAdapter
+
     SunFinanceGroup\Notificator\TemplateBundle\TwigTemplateRendererAdapter: ~
 
+    SunFinanceGroup\Notificator\TemplateBundle\TemplateRepositoryInterface:
+        alias: SunFinanceGroup\Notificator\TemplateBundle\DoctrineTemplateRepository
     SunFinanceGroup\Notificator\TemplateBundle\DoctrineTemplateRepository: ~
 
     SunFinanceGroup\Notificator\App\JsonAPI\Adapters\JMS\JmsDeserializingArgumentValueResolver:
