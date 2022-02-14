@@ -13,7 +13,25 @@ services:
 
     SunFinanceGroup\Notificator\App\JsonAPI\Adapters\JMS\JmsDeserializingArgumentValueResolver:
         $metadataFactory: '@jms_serializer.metadata_factory'
+    SunFinanceGroup\Notificator\App\JsonAPI\Adapters\JMS\JmsResponseSerializer:
+        $metadataFactory: '@jms_serializer.metadata_factory'
 
     SunFinanceGroup\Notificator\App\JsonAPI\Listener\ExceptionListener:
         tags:
             - { name: kernel.event_subscriber }
+
+    SunFinanceGroup\Notificator\VerificationService\VerificationCodeGeneratorInterface:
+        alias: SunFinanceGroup\Notificator\VerificationBundle\VerificationCodeGenerator
+
+    SunFinanceGroup\Notificator\VerificationBundle\VerificationCodeGenerator: ~
+
+    SunFinanceGroup\Notificator\VerificationBundle\Controller\VerificationController:
+        tags:
+            - { name: controller.service_arguments }
+
+    SunFinanceGroup\Notificator\VerificationService\Verifier: ~
+
+    SunFinanceGroup\Notificator\VerificationService\VerificationRepositoryInterface:
+        alias: SunFinanceGroup\Notificator\VerificationBundle\DoctrineVerificationRepositoryAdapter
+
+    SunFinanceGroup\Notificator\VerificationBundle\DoctrineVerificationRepositoryAdapter: ~
