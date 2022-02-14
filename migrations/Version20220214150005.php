@@ -17,11 +17,12 @@ final class Version20220214150005 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(<<<SQL
-            INSERT INTO template (slug, content) VALUES ('mobile-verfication', 'Your verification code is {{ code }}.')
+            INSERT INTO template (slug, content, mime) VALUES (
+                'mobile-verfication', 'Your verification code is {{ code }}.', 'text/plain')
 SQL);
 
         $this->addSql(<<<SQL
-        INSERT INTO template (slug, content) VALUES ('email-verfication', '
+        INSERT INTO template (slug, content, mime) VALUES ('email-verfication', '
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -38,8 +39,9 @@ SQL);
                         <p>Your verification code is {{ code }}.</p>
                     </div>
                 </body>
-                </html>
-        ');
+                </html>',
+                'text/html'
+        );
 SQL);
 
     }

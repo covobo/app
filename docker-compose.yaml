@@ -43,7 +43,6 @@ services:
 
   migration:
     image: sun-finance-group/notificator/app:latest
-    command: bin/console do:da:cr && bin/console do:mi:mi
     depends_on:
       database:
         condition: service_healthy

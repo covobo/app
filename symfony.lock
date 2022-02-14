@@ -1,4 +1,7 @@
 {
+    "brick/math": {
+        "version": "0.9.3"
+    },
     "composer/semver": {
         "version": "3.2.9"
     },
@@ -163,6 +166,12 @@
     },
     "psr/log": {
         "version": "3.0.0"
+    },
+    "ramsey/collection": {
+        "version": "1.2.2"
+    },
+    "ramsey/uuid": {
+        "version": "4.2.3"
     },
     "spiral/goridge": {
         "version": "v3.1.2"

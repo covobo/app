@@ -2,12 +2,9 @@
 
 namespace SunFinanceGroup\Notificator\TemplateService;
 
-use SunFinanceGroup\Notificator\Template\TemplateNotFoundException;
+use SunFinanceGroup\Notificator\Template\Template;
 
 interface TemplateRendererInterface
 {
-    /**
-     * @throws TemplateNotFoundException
-     */
-    public function render(string $slug, array $variables): string;
+    public function render(Template $template, array $context): string;
 }

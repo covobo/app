@@ -10,14 +10,15 @@ use OpenApi\Annotations\Post;
 use OpenApi\Annotations\RequestBody;
 use OpenApi\Annotations\Response;
 use OpenApi\Annotations\Schema;
-use SunFinanceGroup\Notificator\Template\TemplateNotFoundException;
+use SunFinanceGroup\Notificator\TemplateBundle\DoctrineTemplateRepository;
 use SunFinanceGroup\Notificator\TemplateBundle\DTO\TemplateRenderRequest;
+use SunFinanceGroup\Notificator\TemplateBundle\TemplateNotFoundException;
 use SunFinanceGroup\Notificator\TemplateBundle\TwigTemplateRendererAdapter;
 use Symfony\Component\HttpFoundation\Response as HTTPResponse;
 
 final class TemplateController
 {
-    public function __construct(private TwigTemplateRendererAdapter $renderer)
+    public function __construct(private TwigTemplateRendererAdapter $renderer, private DoctrineTemplateRepository $repository)
     {
     }
 
@@ -60,11 +61,17 @@ final class TemplateController
     public function render(TemplateRenderRequest $renderRequest): HTTPResponse
     {
         try {
-            $content = $this->renderer->render($renderRequest->getSlug(), $renderRequest->getVariables());
+            $template = $this->repository->getBySlug($renderRequest->getSlug());
         } catch (TemplateNotFoundException $e) {
             return new HTTPResponse('',HTTPResponse::HTTP_NOT_FOUND);
         }
 
-        return new HTTPResponse($content);
+        return new HTTPResponse(
+            $this->renderer->render($template, $renderRequest->getVariables()),
+            HTTPResponse::HTTP_OK,
+            [
+                'Content-Type' => $template->getMime()
+            ]
+        );
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SunFinanceGroup\Notificator\Template;
+namespace SunFinanceGroup\Notificator\TemplateBundle;
 
 final class TemplateNotFoundException extends \Exception
 {
