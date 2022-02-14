@@ -3,9 +3,16 @@ services:
         autowire: true
         autoconfigure: true
 
-    SunFinanceGroup\Notificator\App\TemplateRenderer:
+    SunFinanceGroup\Notificator\TemplateBundle\Controller\TemplateController:
         tags:
             - { name: controller.service_arguments }
+
+    SunFinanceGroup\Notificator\TemplateBundle\TwigTemplateRendererAdapter: ~
+
+    SunFinanceGroup\Notificator\Template\TemplateRepositoryInterface:
+        alias: SunFinanceGroup\Notificator\TemplateBundle\DoctrineTemplateRepositoryAdapter
+
+    SunFinanceGroup\Notificator\TemplateBundle\DoctrineTemplateRepositoryAdapter: ~
 
     SunFinanceGroup\Notificator\App\JsonAPI\Adapters\JMS\JmsDeserializingArgumentValueResolver:
         $metadataFactory: '@jms_serializer.metadata_factory'

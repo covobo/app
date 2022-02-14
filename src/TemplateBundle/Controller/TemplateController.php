@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SunFinanceGroup\Notificator\App;
+namespace SunFinanceGroup\Notificator\TemplateBundle\Controller;
 
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations\MediaType;
@@ -10,12 +10,14 @@ use OpenApi\Annotations\Post;
 use OpenApi\Annotations\RequestBody;
 use OpenApi\Annotations\Response;
 use OpenApi\Annotations\Schema;
-use SunFinanceGroup\Notificator\App\DTO\TemplateRenderRequest;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use SunFinanceGroup\Notificator\Template\TemplateNotFoundException;
+use SunFinanceGroup\Notificator\TemplateBundle\DTO\TemplateRenderRequest;
+use SunFinanceGroup\Notificator\TemplateBundle\TwigTemplateRendererAdapter;
+use Symfony\Component\HttpFoundation\Response as HTTPResponse;
 
-final class TemplateRenderer
+final class TemplateController
 {
-    public function __construct(private ValidatorInterface $validator)
+    public function __construct(private TwigTemplateRendererAdapter $renderer)
     {
     }
 
@@ -46,12 +48,23 @@ final class TemplateRenderer
      * )
      *
      * @Response(
+     *     response=500,
+     *     description="Internal server errors",
+     * )
+     *
+     * @Response(
      *     response=422,
      *     description="Validation failed: invalid / missing variables supplied.",
      * )
      */
-    public function render(TemplateRenderRequest $renderRequest): \Symfony\Component\HttpFoundation\Response
+    public function render(TemplateRenderRequest $renderRequest): HTTPResponse
     {
-        return new \Symfony\Component\HttpFoundation\Response('Hello world');
+        try {
+            $content = $this->renderer->render($renderRequest->getSlug(), $renderRequest->getVariables());
+        } catch (TemplateNotFoundException $e) {
+            return new HTTPResponse('',HTTPResponse::HTTP_NOT_FOUND);
+        }
+
+        return new HTTPResponse($content);
     }
 }

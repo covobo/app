@@ -13,6 +13,7 @@ services:
     depends_on:
       - mailhog
       - rabbitmq
+      - database
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -23,3 +24,35 @@ services:
     image: rabbitmq:3.9.13-management
     ports:
       - "15672:15672"
+
+  database:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: symfony
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  migration:
+    image: sun-finance-group/notificator/app:latest
+    command: bin/console do:da:cr && bin/console do:mi:mi
+    depends_on:
+      database:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      bin/console doctrine:database:create --if-not-exists &&
+      bin/console doctrine:migrations:migrate --no-interaction &&
+      exit 0;
+      "
+
+volumes:
+  db-data:

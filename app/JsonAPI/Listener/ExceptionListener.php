@@ -42,7 +42,8 @@ final class ExceptionListener implements EventSubscriberInterface
             $httpCode = Response::HTTP_UNPROCESSABLE_ENTITY;
         }
 
-        if ($exception instanceof MalformedJsonException) {$httpCode = Response::HTTP_BAD_REQUEST;
+        if ($exception instanceof MalformedJsonException) {
+            $httpCode = Response::HTTP_BAD_REQUEST;
         }
 
         $event->allowCustomResponseCode();

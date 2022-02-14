@@ -1,4 +1,4 @@
 notificator.render_template:
   path: /templates/render
-  controller: 'SunFinanceGroup\Notificator\App\TemplateRenderer::render'
+  controller: 'SunFinanceGroup\Notificator\TemplateBundle\Controller\TemplateController::render'
   methods: post

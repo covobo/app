@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SunFinanceGroup\Notificator\App\DTO;
+namespace SunFinanceGroup\Notificator\TemplateBundle\DTO;
 
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,4 +32,20 @@ final class TemplateRenderRequest
      */
     #[Serializer\Type(name: "array<string, string>")]
     private array $variables;
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getVariables(): array
+    {
+        return $this->variables;
+    }
 }
