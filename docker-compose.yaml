@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  app:
+    image: sun-finance-group/notificator/app:latest
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    depends_on:
+      - mailhog
+      - rabbitmq
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "8025:8025"
+
+  rabbitmq:
+    image: rabbitmq:3.9.13-management
+    ports:
+      - "15672:15672"

@@ -1,7 +1,7 @@
-controllers:
-    resource: ../src/Controller/
-    type: annotation
+api:
+    resource: routes/notificator.yaml
+    format: json
 
 kernel:
-    resource: ../src/Kernel.php
+    resource: ../app/AppKernel.php
     type: annotation

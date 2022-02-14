@@ -1,0 +1,11 @@
+version: "3.4"
+
+services:
+  app:
+    volumes:
+      - .:/app
+    environment:
+      XDEBUG_CONFIG: client_host=${XDEBUG_HOST:-192.168.99.1}
+      XDEBUG_MODE: debug,develop,coverage
+      XDEBUG_SESSION: phpstorm
+      PHP_IDE_CONFIG: serverName=notificator

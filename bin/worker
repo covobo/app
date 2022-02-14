@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+ini_set('display_errors', 'stderr');
+require_once __DIR__ . "/../vendor/autoload.php";
+
+use SunFinanceGroup\Notificator\App\AppKernel;
+use Nyholm\Psr7;
+use Spiral\RoadRunner;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
+
+$worker = RoadRunner\Worker::create();
+$psrFactory = new Psr7\Factory\Psr17Factory();
+
+$worker = new RoadRunner\Http\PSR7Worker($worker, $psrFactory, $psrFactory, $psrFactory);
+
+$requestFactory = new HttpFoundationFactory();
+$responseFactory = new PsrHttpFactory($psrFactory, $psrFactory, $psrFactory, $psrFactory);
+
+while ($psr7request = $worker->waitRequest()) {
+    try {
+        $app = new AppKernel(getenv('APP_ENV'), (bool) getenv('APP_DEBUG'));
+
+        $request = $requestFactory->createRequest($psr7request);
+        $response = $app->handle($request);
+
+        $worker->respond($responseFactory->createResponse($response));
+
+        $app->terminate($request, $response);
+    } catch (\Throwable $e) {
+        $worker->getWorker()->error((string)$e);
+    } finally {
+        $app = null;
+        gc_collect_cycles();
+    }
+}

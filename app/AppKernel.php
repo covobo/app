@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace SunFinanceGroup\Notificator\App;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
-class Kernel extends BaseKernel
+class AppKernel extends BaseKernel
 {
     use MicroKernelTrait;
 }

@@ -1,0 +1,44 @@
+server:
+  command: "php ./bin/worker"
+
+logs:
+  mode: raw
+  err_output: stdout
+  encoding: console
+  output: stdout
+  channels:
+    http:
+      mode: development
+      level: debug
+
+reload:
+  # sync interval
+  interval: 1s
+  # global patterns to sync
+  patterns: [ ".php", ".yaml", ".yml", ".env" ]
+  services:
+    http:
+      # recursive search for file patterns to add
+      recursive: true
+      # ignored folders
+      ignore: [ "vendor" ]
+      # directories to sync. If recursive is set to true,
+      # recursive sync will be applied only to the directories in `dirs` section
+      dirs: [ "." ]
+
+http:
+  address: 0.0.0.0:80
+  pool:
+    num_workers: 4
+    debug: true
+  middleware: [ "static" ]
+  static:
+    dir: "public"
+    forbid: [ ".php" ]
+    calculate_etag: false
+    weak: false
+    allow: [ ".js", ".png", ".css" ]
+    request:
+      input: "custom-header"
+    response:
+      output: "output-header"
