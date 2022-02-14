@@ -1,6 +1,7 @@
 framework:
     secret: '%env(APP_SECRET)%'
     http_method_override: false
+    validation: ~
 
     session:
         handler_id: null

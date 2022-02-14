@@ -2,3 +2,14 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+
+    SunFinanceGroup\Notificator\App\TemplateRenderer:
+        tags:
+            - { name: controller.service_arguments }
+
+    SunFinanceGroup\Notificator\App\JsonAPI\Adapters\JMS\JmsDeserializingArgumentValueResolver:
+        $metadataFactory: '@jms_serializer.metadata_factory'
+
+    SunFinanceGroup\Notificator\App\JsonAPI\Listener\ExceptionListener:
+        tags:
+            - { name: kernel.event_subscriber }
