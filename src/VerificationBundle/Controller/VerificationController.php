@@ -13,11 +13,12 @@ use OpenApi\Annotations\Schema;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use SunFinanceGroup\Notificator\VerificationBundle\DTO\CreateVerificationRequest;
 use SunFinanceGroup\Notificator\VerificationBundle\DTO\VerificationCreated;
-use SunFinanceGroup\Notificator\VerificationService\Verifier;
+use SunFinanceGroup\Notificator\VerificationBundle\VerifierInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 final class VerificationController
 {
-    public function __construct(private Verifier $verifier)
+    public function __construct(private VerifierInterface $verifier)
     {
     }
 
@@ -45,7 +46,7 @@ final class VerificationController
      *
      * @Response(
      *     response=409,
-     *     description="Duplicated verification..",
+     *     description="Duplicated verification.",
      * )
      *
      * @Response(
@@ -58,8 +59,14 @@ final class VerificationController
      *     description="Validation failed: invalid / missing variables supplied.",
      * )
      */
-    public function create(CreateVerificationRequest $request): VerificationCreated
+    public function create(Request $httpRequest, CreateVerificationRequest $request): VerificationCreated
     {
-        return new VerificationCreated('123');
+        return $this->verifier->create(
+            $request,
+            [
+                'client_ip' => $httpRequest->getClientIp(),
+                'client_user_agent' => $httpRequest->headers->get('User-Agent')
+            ]
+        );
     }
 }

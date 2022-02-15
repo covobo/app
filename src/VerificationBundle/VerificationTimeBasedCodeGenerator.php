@@ -6,7 +6,7 @@ namespace SunFinanceGroup\Notificator\VerificationBundle;
 
 use SunFinanceGroup\Notificator\VerificationService\VerificationCodeGeneratorInterface;
 
-final class VerificationCodeGenerator implements VerificationCodeGeneratorInterface
+final class VerificationTimeBasedCodeGenerator implements VerificationCodeGeneratorInterface
 {
     public function generate(): string
     {

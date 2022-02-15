@@ -19,6 +19,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/TemplateBundle/Entity'
                 prefix: 'SunFinanceGroup\Notificator\TemplateBundle\Entity'
                 alias: StorageApp
+            VerificationDomain:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Verification'
+                prefix: 'SunFinanceGroup\Notificator\Verification'
+                alias: Verification
 
 when@test:
     doctrine:

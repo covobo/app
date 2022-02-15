@@ -14,7 +14,7 @@ class Template
     #[Column(type: 'string'), Id]
     private string $slug;
 
-    #[Column(type: 'string')]
+    #[Column(type: 'text')]
     private string $content;
 
     public function __construct(string $slug, string $content)

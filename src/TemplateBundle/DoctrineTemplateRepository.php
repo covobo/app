@@ -10,16 +10,16 @@ use SunFinanceGroup\Notificator\TemplateBundle\Entity\Template as EntityTemplate
 
 final class DoctrineTemplateRepository implements TemplateRepositoryInterface
 {
-    private ObjectRepository $innerRepo;
+    private ObjectRepository $doctrineRepo;
 
     public function __construct(private EntityManagerInterface $em)
     {
-        $this->innerRepo = $this->em->getRepository(EntityTemplate::class);
+        $this->doctrineRepo = $this->em->getRepository(EntityTemplate::class);
     }
 
     public function getBySlug(string $slug): EntityTemplate
     {
-        $template = $this->innerRepo->find($slug);
+        $template = $this->doctrineRepo->find($slug);
 
         if ($template === null) {
             throw new TemplateNotFoundException();

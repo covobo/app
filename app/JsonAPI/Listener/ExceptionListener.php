@@ -6,6 +6,7 @@ namespace SunFinanceGroup\Notificator\App\JsonAPI\Listener;
 
 use SunFinanceGroup\Notificator\App\JsonAPI\Adapters\Exception\InvalidParametersException;
 use SunFinanceGroup\Notificator\App\JsonAPI\Adapters\Exception\MalformedJsonException;
+use SunFinanceGroup\Notificator\VerificationService\DuplicateNonConfirmedVerifications;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +45,10 @@ final class ExceptionListener implements EventSubscriberInterface
 
         if ($exception instanceof MalformedJsonException) {
             $httpCode = Response::HTTP_BAD_REQUEST;
+        }
+
+        if ($exception instanceof DuplicateNonConfirmedVerifications) {
+            $httpCode = Response::HTTP_CONFLICT;
         }
 
         $event->allowCustomResponseCode();

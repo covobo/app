@@ -13,6 +13,7 @@ final class TemplateRenderRequest
     /**
      * @Assert\NotBlank()
      * @Assert\NotNull()
+     * @Assert\Length(max=255)
      * @OA\Property(
      *     type="string",
      *     description="The unique identifier of the template.",
@@ -39,9 +40,6 @@ final class TemplateRenderRequest
         $this->variables = $variables;
     }
 
-    /**
-     * @return string
-     */
     public function getSlug(): string
     {
         return $this->slug;

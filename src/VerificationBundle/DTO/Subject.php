@@ -13,6 +13,7 @@ final class Subject
     /**
      * @Assert\NotBlank()
      * @Assert\NotNull()
+     * @Assert\Length(max=255)
      * @OA\Property(
      *     type="string",
      *     description="Destination for verification.",
@@ -25,6 +26,7 @@ final class Subject
     /**
      * @Assert\NotBlank()
      * @Assert\NotNull()
+     * @Assert\Length(max=255)
      * @OA\Property(
      *     type="string",
      *     description="The unique identifier of the template.",
@@ -33,6 +35,12 @@ final class Subject
      */
     #[Serializer\Type(name: "string")]
     private ?string $type;
+
+    public function __construct(string $identity, string $type)
+    {
+        $this->identity = $identity;
+        $this->type = $type;
+    }
 
     public function getIdentity(): string
     {

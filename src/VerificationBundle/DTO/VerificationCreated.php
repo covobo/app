@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SunFinanceGroup\Notificator\VerificationBundle\DTO;
 
 use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Validator\Constraints as Assert;
 use OpenApi\Annotations as OA;
 
 final class VerificationCreated

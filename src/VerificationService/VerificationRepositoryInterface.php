@@ -10,9 +10,9 @@ use SunFinanceGroup\Notificator\Verification\Verification;
 interface VerificationRepositoryInterface
 {
     /**
-     * @throws
+     * @throws MultipleVerificationExists
      */
-    public function getNonConfirmedForSubject(Subject $subject): Verification;
+    public function findNonConfirmedForSubject(Subject $subject): ?Verification;
 
     public function save(Verification $verification): void;
 }
