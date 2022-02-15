@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
+use SunFinanceGroup\Notificator\Verification\Exception\NoPermission;
 use SunFinanceGroup\Notificator\Verification\Exception\VerificationExpired;
 use SunFinanceGroup\Notificator\Verification\Exception\VerificationIsAlreadyConfirmed;
 
@@ -25,14 +26,10 @@ class Verification
     private Subject $subject;
     #[Column(type: 'datetime')]
     private \DateTimeInterface $expiredAt;
-    /** @var string[] */
-    #[Column(type: 'json')]
-    private array $userInfo;
+    #[Embedded(class: UserInfo::class, columnPrefix: 'user_info_')]
+    private UserInfo $userInfo;
 
-    /**
-     * @param string[] $userInfo
-     */
-    public function __construct(Subject $subject, \DateTimeInterface $expiredAt, string $code, array $userInfo)
+    public function __construct(Subject $subject, \DateTimeInterface $expiredAt, string $code, UserInfo $userInfo)
     {
         $this->id = Uuid::uuid4()->toString();
         $this->code = $code;
@@ -50,15 +47,20 @@ class Verification
      * @throws BadVerificationCode
      * @throws VerificationIsAlreadyConfirmed
      * @throws VerificationExpired
+     * @throws NoPermission
      */
-    public function confirmByCode(string $code): void
+    public function confirmByCodeAndUserInfo(string $code, UserInfo $userInfo): void
     {
-        if ((new \DateTimeImmutable())->getTimestamp() > $this->expiredAt->getTimestamp()) {
-            throw new VerificationExpired();
+        if (!$this->userInfo->equals($userInfo)) {
+            throw new NoPermission();
         }
 
         if ($this->confirmed) {
             throw new VerificationIsAlreadyConfirmed();
+        }
+
+        if ((new \DateTimeImmutable())->getTimestamp() > $this->expiredAt->getTimestamp()) {
+            throw new VerificationExpired();
         }
 
         if ($code !== $this->code) {

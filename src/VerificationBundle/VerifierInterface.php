@@ -7,8 +7,5 @@ use SunFinanceGroup\Notificator\VerificationBundle\DTO\VerificationCreated;
 
 interface VerifierInterface
 {
-    /**
-     * @param string[] $userInfo
-     */
-    public function create(CreateVerificationRequest $request, array $userInfo): VerificationCreated;
+    public function create(CreateVerificationRequest $request, string $ip, string $userAgent): VerificationCreated;
 }

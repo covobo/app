@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SunFinanceGroup\Notificator\VerificationService;
 
 use SunFinanceGroup\Notificator\Verification\Subject;
+use SunFinanceGroup\Notificator\Verification\UserInfo;
 use SunFinanceGroup\Notificator\Verification\Verification;
 use SunFinanceGroup\Notificator\VerificationService\Exception\DuplicateNonConfirmedVerifications;
 
@@ -18,7 +19,7 @@ final class Verifier implements VerifierInterface
     {
     }
 
-    public function createForSubject(Subject $subject, array $userInfo): Verification
+    public function createForSubject(Subject $subject, UserInfo $userInfo): Verification
     {
         $verification = $this->repository->findNonConfirmedForSubject($subject);
 
@@ -40,10 +41,10 @@ final class Verifier implements VerifierInterface
         return $verification;
     }
 
-    public function confirm(string $uuid, string $code): void
+    public function confirm(string $uuid, string $code, UserInfo $userInfo): void
     {
         $verification = $this->repository->get($uuid);
-        $verification->confirmByCode($code);
+        $verification->confirmByCodeAndUserInfo($code, $userInfo);
         $this->repository->save($verification);
     }
 }

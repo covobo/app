@@ -14,6 +14,7 @@ use OpenApi\Annotations\PathParameter;
 use OpenApi\Annotations\Put;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use SunFinanceGroup\Notificator\Verification\BadVerificationCode;
+use SunFinanceGroup\Notificator\Verification\Exception\NoPermission;
 use SunFinanceGroup\Notificator\Verification\Exception\VerificationExpired;
 use SunFinanceGroup\Notificator\Verification\Exception\VerificationIsAlreadyConfirmed;
 use SunFinanceGroup\Notificator\VerificationBundle\DTO\ConfirmVerificationRequest;
@@ -72,10 +73,8 @@ final class VerificationController
     {
         return $this->verifier->create(
             $request,
-            [
-                'client_ip' => $httpRequest->getClientIp(),
-                'client_user_agent' => $httpRequest->headers->get('User-Agent')
-            ]
+            $httpRequest->getClientIp(),
+            $httpRequest->headers->get('User-Agent')
         );
     }
 
@@ -131,10 +130,10 @@ final class VerificationController
      *     description="Internal server errors",
      * )
      */
-    public function confirm(string $uuid, ConfirmVerificationRequest $request): HTTPResponse
+    public function confirm(string $uuid, ConfirmVerificationRequest $request, Request $httpRequest): HTTPResponse
     {
         try {
-            $this->verifier->confirm($uuid, $request->getCode());
+            $this->verifier->confirm($uuid, $request->getCode(), $httpRequest->getClientIp(), $httpRequest->headers->get('User-Agent'));
         } catch (VerificationIsAlreadyConfirmed $e) {
             return new HTTPResponse('', HTTPResponse::HTTP_NO_CONTENT);
         } catch (VerificationNotFoundException $e) {
@@ -143,6 +142,8 @@ final class VerificationController
             return new HTTPResponse('', HTTPResponse::HTTP_GONE);
         } catch (BadVerificationCode $e) {
             return new HTTPResponse('', HTTPResponse::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (NoPermission $e) {
+            return new HTTPResponse('', HTTPResponse::HTTP_FORBIDDEN);
         }
 
         return new HTTPResponse('', HTTPResponse::HTTP_NO_CONTENT);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SunFinanceGroup\Notificator\VerificationBundle;
 
 use SunFinanceGroup\Notificator\Verification\Subject;
+use SunFinanceGroup\Notificator\Verification\UserInfo;
 use SunFinanceGroup\Notificator\VerificationBundle\DTO\CreateVerificationRequest;
 use SunFinanceGroup\Notificator\VerificationBundle\DTO\VerificationCreated;
 use SunFinanceGroup\Notificator\VerificationService\Verifier as AppVerifier;
@@ -15,7 +16,7 @@ final class VerifiedAdapter implements VerifierInterface
     {
     }
 
-    public function create(CreateVerificationRequest $request, array $userInfo): VerificationCreated
+    public function create(CreateVerificationRequest $request, string $ip, string $userAgent): VerificationCreated
     {
         $subjectDTO = $request->getSubject();
 
@@ -24,14 +25,21 @@ final class VerifiedAdapter implements VerifierInterface
                 $subjectDTO->getIdentity(),
                 $subjectDTO->getType()
             ),
-            $userInfo
+            new UserInfo(
+                $ip,
+                $userAgent
+            )
         );
 
         return new VerificationCreated($newVerification->getId());
     }
 
-    public function confirm(string $uuid, string $code): void
+    public function confirm(string $uuid, string $code, string $ip, string $userAgent): void
     {
-        $this->adaptee->confirm($uuid, $code);
+        $this->adaptee->confirm(
+            $uuid,
+            $code,
+            new UserInfo($ip, $userAgent)
+        );
     }
 }
