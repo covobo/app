@@ -61,6 +61,7 @@ final class VerificationController
      */
     public function create(Request $httpRequest, CreateVerificationRequest $request): VerificationCreated
     {
+        // TODO: there must be some kind of lock to prevent concurrency of creating verification for a single identity
         return $this->verifier->create(
             $request,
             [

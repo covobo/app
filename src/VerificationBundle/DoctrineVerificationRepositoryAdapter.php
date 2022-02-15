@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use SunFinanceGroup\Notificator\Verification\Subject;
 use SunFinanceGroup\Notificator\Verification\Verification;
-use SunFinanceGroup\Notificator\VerificationService\MultipleVerificationExists;
+use SunFinanceGroup\Notificator\VerificationService\Exception\MultipleVerificationExists;
 use SunFinanceGroup\Notificator\VerificationService\VerificationRepositoryInterface;
 
 final class DoctrineVerificationRepositoryAdapter implements VerificationRepositoryInterface
@@ -26,10 +26,18 @@ final class DoctrineVerificationRepositoryAdapter implements VerificationReposit
     {
         /** @var Verification[] $verifications */
         $verifications = $this->doctrineRepo
-            ->findBy([
-                'subject.identity' => $subject->getIdentity(),
-                'subject.type' => $subject->getType()
-            ]);
+            ->createQueryBuilder('v')
+            ->where('v.subject.identity = :identity')
+            ->andWhere('v.subject.type = :type')
+            ->andWhere('v.confirmed = false')
+            ->andWhere('v.expiredAt >= :now')
+            ->setParameters([
+                'identity' => $subject->getIdentity(),
+                'type' => $subject->getType(),
+                'now' => new \DateTimeImmutable(),
+            ])
+            ->getQuery()
+            ->getResult();
 
         if (count($verifications) > 1) {
             throw new MultipleVerificationExists();

@@ -11,7 +11,7 @@ use SunFinanceGroup\Notificator\VerificationService\Verifier as AppVerifier;
 
 final class VerifiedAdapter implements VerifierInterface
 {
-    public function __construct(private AppVerifier $adaptee)
+    public function __construct(private AppVerifier $adaptee, private int $ttlMinutes)
     {
     }
 
@@ -24,6 +24,7 @@ final class VerifiedAdapter implements VerifierInterface
                 $subjectDTO->getIdentity(),
                 $subjectDTO->getType()
             ),
+            (new \DateTime())->modify(sprintf('+%dminutes', $this->ttlMinutes)),
             $userInfo
         );
 

@@ -16,7 +16,7 @@ final class Version20220215094412 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE verification (id VARCHAR(255) NOT NULL, code VARCHAR(255) NOT NULL, confirmed BOOLEAN NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, subject_identity VARCHAR(255) NOT NULL, subject_type VARCHAR(255) NOT NULL, user_info JSON NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE verification (id VARCHAR(255) NOT NULL, code VARCHAR(255) NOT NULL, confirmed BOOLEAN NOT NULL, expired_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, subject_identity VARCHAR(255) NOT NULL, subject_type VARCHAR(255) NOT NULL, user_info JSON NOT NULL, PRIMARY KEY(id))');
     }
 
     public function down(Schema $schema): void

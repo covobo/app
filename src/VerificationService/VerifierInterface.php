@@ -4,6 +4,7 @@ namespace SunFinanceGroup\Notificator\VerificationService;
 
 use SunFinanceGroup\Notificator\Verification\Subject;
 use SunFinanceGroup\Notificator\Verification\Verification;
+use SunFinanceGroup\Notificator\VerificationService\Exception\DuplicateNonConfirmedVerifications;
 
 interface VerifierInterface
 {
@@ -12,10 +13,7 @@ interface VerifierInterface
      *
      * @throws DuplicateNonConfirmedVerifications
      */
-    public function createForSubject(Subject $subject, array $userInfo): Verification;
+    public function createForSubject(Subject $subject, \DateTimeInterface $dateTime, array $userInfo): Verification;
 
-    /**
-     * @throws MultipleVerificationExists
-     */
-    public function verifyForSubject(Subject $subject, string $code): void;
+    public function confirm(Verification $verification, string $code): void;
 }

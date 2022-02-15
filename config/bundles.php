@@ -9,4 +9,5 @@ return [
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
     SunFinanceGroup\Notificator\TemplateBundle\TemplateBundle::class => ['all' => true],
+    SunFinanceGroup\Notificator\VerificationBundle\VerificationBundle::class => ['all' => true],
 ];

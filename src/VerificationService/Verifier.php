@@ -6,6 +6,7 @@ namespace SunFinanceGroup\Notificator\VerificationService;
 
 use SunFinanceGroup\Notificator\Verification\Subject;
 use SunFinanceGroup\Notificator\Verification\Verification;
+use SunFinanceGroup\Notificator\VerificationService\Exception\DuplicateNonConfirmedVerifications;
 
 final class Verifier implements VerifierInterface
 {
@@ -16,7 +17,7 @@ final class Verifier implements VerifierInterface
     {
     }
 
-    public function createForSubject(Subject $subject, array $userInfo): Verification
+    public function createForSubject(Subject $subject, \DateTimeInterface $dateTime, array $userInfo): Verification
     {
         $verification = $this->repository->findNonConfirmedForSubject($subject);
 
@@ -24,20 +25,15 @@ final class Verifier implements VerifierInterface
             throw new DuplicateNonConfirmedVerifications('Duplicated verification');
         }
 
-        $verification = new Verification($subject, $this->codeGenerator->generate(), $userInfo);
+        $verification = new Verification($subject, $dateTime, $this->codeGenerator->generate(), $userInfo);
         $this->repository->save($verification);
 
         return $verification;
     }
 
-    public function verifyForSubject(Subject $subject, string $code): void
+    public function confirm(Verification $verification, string $code): void
     {
-        $verification = $this->repository->findNonConfirmedForSubject($subject);
-
-        if ($verification === null) {
-
-        }
-
         $verification->confirmByCode($code);
+
     }
 }

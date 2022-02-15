@@ -18,6 +18,8 @@ Run tests
 docker-compose exec app ./vendor/bin/phpunit
 ```
 
+You have to rerun an app if you change envs
+
 ## See result
 
 Open http://<host>:<port>/api/doc to see api doc

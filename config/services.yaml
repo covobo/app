@@ -26,14 +26,28 @@ services:
             - { name: kernel.event_subscriber }
 
     SunFinanceGroup\Notificator\VerificationService\VerificationCodeGeneratorInterface:
-        alias: SunFinanceGroup\Notificator\VerificationBundle\VerificationTimeBasedCodeGenerator
+        alias: SunFinanceGroup\Notificator\VerificationBundle\VerificationDictionaryBasedCodeGenerator
 
-    SunFinanceGroup\Notificator\VerificationBundle\VerificationTimeBasedCodeGenerator: ~
+    SunFinanceGroup\Notificator\VerificationBundle\VerificationDictionaryBasedCodeGenerator:
+        arguments:
+            $codeLength: '%env(resolve:VERIFICATION_CODE_LENGTH)%'
+            $dict:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+                - 8
+                - 9
 
     SunFinanceGroup\Notificator\VerificationBundle\VerifierInterface:
         alias: SunFinanceGroup\Notificator\VerificationBundle\VerifiedAdapter
 
-    SunFinanceGroup\Notificator\VerificationBundle\VerifiedAdapter: ~
+    SunFinanceGroup\Notificator\VerificationBundle\VerifiedAdapter:
+        arguments:
+            $ttlMinutes: '%env(resolve:VERIFICATION_TTL_MINUTES)%'
 
     SunFinanceGroup\Notificator\VerificationBundle\Controller\VerificationController:
         tags:
