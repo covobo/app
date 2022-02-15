@@ -16,8 +16,15 @@ RUN apk add --no-cache --update \
     && pecl install xdebug-3.0.4 \
     && docker-php-ext-install pdo_pgsql \
     && docker-php-ext-install opcache \
-    && docker-php-ext-install sockets \
-    && apk del .build-deps
+    && docker-php-ext-install sockets
+
+RUN docker-php-source extract \
+    && apk -Uu add git rabbitmq-c-dev \
+    && git clone --branch v1.11.0 --depth 1 https://github.com/php-amqp/php-amqp.git /usr/src/php/ext/amqp \
+    && cd /usr/src/php/ext/amqp && git submodule update --init \
+    && docker-php-ext-install amqp
+
+RUN apk del .build-deps
 
 RUN setup-timezone -z "Europe/Moscow"
 

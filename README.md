@@ -1,4 +1,8 @@
 # Home task
+## envs
+Place your token GOTIFY_TOKEN
+you can do it after first application up
+
 ## Build and run
 
 ```bash
@@ -24,3 +28,42 @@ You have to rerun an app if you change envs
 
 Open http://<host>:<port>/api/doc to see api doc
 
+## Happy path
+
+for SMS notification:
+
+```bash
+curl --location --request POST 'http://<host>:<port>/verifications' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "subject": {
+    "identity": "+7100500",
+    "type": "mobile-verfication"
+  }
+}'
+```
+
+for EMAIL notification:
+
+```bash
+curl --location --request POST 'http://<host>:<port>/verifications' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "subject": {
+    "identity": "email@email.com",
+    "type": "email-verfication"
+  }
+}'
+```
+
+grab confirmation id from request and confirmation code from sms/email
+
+confirm
+
+```bash
+curl --location --request PUT 'http://<host>:<port>/verifications/<confirmation-uuid>/confirm' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "code": "<confirmation-code>"
+}'
+```

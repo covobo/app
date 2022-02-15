@@ -25,6 +25,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Verification'
                 prefix: 'SunFinanceGroup\Notificator\Verification'
                 alias: Verification
+            NotificationDomain:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Notification'
+                prefix: 'SunFinanceGroup\Notificator\Notification'
+                alias: Notification
 
 when@test:
     doctrine:

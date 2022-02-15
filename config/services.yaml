@@ -62,3 +62,45 @@ services:
         alias: SunFinanceGroup\Notificator\VerificationBundle\DoctrineVerificationRepositoryAdapter
 
     SunFinanceGroup\Notificator\VerificationBundle\DoctrineVerificationRepositoryAdapter: ~
+
+    SunFinanceGroup\Notificator\AppBundle\Notification\GotifyTransport:
+        arguments:
+            $guzzle: '@eight_points_guzzle.client.gotify'
+            $token: '%env(resolve:GOTIFY_TOKEN)%'
+
+    SunFinanceGroup\Notificator\AppBundle\Notification\EmailTransport: ~
+
+    SunFinanceGroup\Notificator\NotificationService\TransportSelectorInterface:
+        alias: SunFinanceGroup\Notificator\AppBundle\Notification\TransportSelector
+
+    SunFinanceGroup\Notificator\AppBundle\Notification\TransportSelector:
+        calls:
+            - method: registerTransport
+              arguments:
+                  $channel: 'SMS'
+                  $transport: '@SunFinanceGroup\Notificator\AppBundle\Notification\GotifyTransport'
+            - method: registerTransport
+              arguments:
+                  $channel: 'EMAIL'
+                  $transport: '@SunFinanceGroup\Notificator\AppBundle\Notification\EmailTransport'
+
+    SunFinanceGroup\Notificator\AppBundle\Notification\NotificationCommandHandler: ~
+
+    SunFinanceGroup\Notificator\AppBundle\Notification\VerificationEventListener: ~
+
+    SunFinanceGroup\Notificator\NotificationService\NotificationRepositoryInterface:
+        alias: SunFinanceGroup\Notificator\AppBundle\Notification\DoctrineNotificationRepository
+
+    SunFinanceGroup\Notificator\AppBundle\Notification\DoctrineNotificationRepository: ~
+
+    SunFinanceGroup\Notificator\NotificationService\NotificatorInterface:
+        alias: SunFinanceGroup\Notificator\NotificationService\Notificator
+
+    SunFinanceGroup\Notificator\NotificationService\Notificator: ~
+
+    SunFinanceGroup\Notificator\AppBundle\TemplateBridge\RendererInterface:
+        alias: SunFinanceGroup\Notificator\AppBundle\TemplateBridge\Renderer
+
+    SunFinanceGroup\Notificator\AppBundle\TemplateBridge\Renderer:
+        arguments:
+            $guzzle: '@eight_points_guzzle.client.template'

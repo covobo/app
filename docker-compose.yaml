@@ -11,9 +11,26 @@ services:
     env_file:
       - .env
     depends_on:
-      - mailhog
-      - rabbitmq
-      - database
+      rabbitmq:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+
+  consumer:
+    image: sun-finance-group/notificator/app:latest
+    depends_on:
+      mailhog:
+        condition: service_started
+      gotify:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      bin/console messenger:consume async -vv
+      "
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -24,6 +41,11 @@ services:
     image: rabbitmq:3.9.13-management
     ports:
       - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   database:
     image: postgres:13-alpine
@@ -52,6 +74,11 @@ services:
       bin/console doctrine:migrations:migrate --no-interaction &&
       exit 0;
       "
+
+  gotify:
+    image: gotify/server:2.1.4
+    ports:
+      - '8080:80'
 
 volumes:
   db-data:
