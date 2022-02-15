@@ -55,7 +55,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer validate --no-check-all --strict && composer install --prefer-dist --optimize-autoloader --no-dev --no-interaction
+RUN composer validate --no-check-all --strict && composer install --prefer-dist --optimize-autoloader  --no-interaction
 
 RUN bin/console cache:warmup
 
