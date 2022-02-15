@@ -26,7 +26,7 @@ You have to rerun an app if you change envs
 
 ## See result
 
-Open http://<host>:<port>/api/doc to see api doc
+Open `http://<host>:<port>/api/doc` to see api doc
 
 ## Happy path
 
