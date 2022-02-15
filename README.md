@@ -10,7 +10,7 @@ docker-compose build --no-cache
 docker-compose up -d
 ```
 
-Use this command to run an app in develop environment
+Use this command to run an app in develop environment (composer install required on a local machine for developing)
 
 ```bash
 docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d
