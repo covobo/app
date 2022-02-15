@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping\Entity;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
+use SunFinanceGroup\Notificator\Verification\Events\VerificationConfirmationFailed;
+use SunFinanceGroup\Notificator\Verification\Events\VerificationConfirmed;
+use SunFinanceGroup\Notificator\Verification\Events\VerificationCreated;
+use SunFinanceGroup\Notificator\Verification\Events\VerificationEvent;
 use SunFinanceGroup\Notificator\Verification\Exception\NoPermission;
 use SunFinanceGroup\Notificator\Verification\Exception\VerificationExpired;
 use SunFinanceGroup\Notificator\Verification\Exception\VerificationIsAlreadyConfirmed;
@@ -32,6 +36,8 @@ class Verification
     private int $maxAttempts;
     #[Column(type: 'integer')]
     private int $attempts = 0;
+    /** @var VerificationEvent[] */
+    private array $events;
 
     public function __construct(
         Subject $subject,
@@ -47,6 +53,7 @@ class Verification
         $this->userInfo = $userInfo;
         $this->expiredAt = $expiredAt;
         $this->maxAttempts = $maxAttempts;
+        $this->events[] = new VerificationCreated($this->id, $this->code, $this->subject);
     }
 
     public function getId(): string
@@ -68,25 +75,47 @@ class Verification
     public function confirmByCodeAndUserInfo(string $code, UserInfo $userInfo): void
     {
         if (!$this->userInfo->equals($userInfo)) {
+            $this->events[] = new VerificationConfirmationFailed($this->id, $this->code, $this->subject);
+
             throw new NoPermission();
         }
 
         if ($this->confirmed) {
+            $this->events[] = new VerificationConfirmationFailed($this->id, $this->code, $this->subject);
+
             throw new VerificationIsAlreadyConfirmed();
         }
 
         if ((new \DateTimeImmutable())->getTimestamp() > $this->expiredAt->getTimestamp()) {
+            $this->events[] = new VerificationConfirmationFailed($this->id, $this->code, $this->subject);
+
             throw new VerificationExpired();
         }
 
         if ($this->attempts > $this->maxAttempts) {
+            $this->events[] = new VerificationConfirmationFailed($this->id, $this->code, $this->subject);
+
             throw new VerificationExpired();
         }
 
         if ($code !== $this->code) {
+            $this->events[] = new VerificationConfirmationFailed($this->id, $this->code, $this->subject);
+
             throw new BadVerificationCode();
         }
 
         $this->confirmed = true;
+
+        $this->events[] = new VerificationConfirmed($this->id, $this->code, $this->subject);
+    }
+
+    /**
+     * @return VerificationEvent[]
+     */
+    public function flushEvents(): array
+    {
+        $events = $this->events;
+        $this->events = [];
+        return $events;
     }
 }

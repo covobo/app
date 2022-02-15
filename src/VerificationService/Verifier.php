@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SunFinanceGroup\Notificator\VerificationService;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use SunFinanceGroup\Notificator\Verification\Subject;
 use SunFinanceGroup\Notificator\Verification\UserInfo;
 use SunFinanceGroup\Notificator\Verification\Verification;
@@ -16,6 +17,7 @@ final class Verifier implements VerifierInterface
     public function __construct(
         private VerificationRepositoryInterface $repository,
         private VerificationCodeGeneratorInterface $codeGenerator,
+        private EventDispatcherInterface $eventDispatcher,
         private int $ttlMinutes
     )
     {
@@ -41,6 +43,10 @@ final class Verifier implements VerifierInterface
 
         $this->repository->save($verification);
 
+        foreach ($verification->flushEvents() as $event) {
+            $this->eventDispatcher->dispatch($event);
+        }
+
         return $verification;
     }
 
@@ -53,6 +59,10 @@ final class Verifier implements VerifierInterface
             $verification->confirmByCodeAndUserInfo($code, $userInfo);
         } finally {
             $this->repository->save($verification);
+
+            foreach ($verification->flushEvents() as $event) {
+                $this->eventDispatcher->dispatch($event);
+            }
         }
     }
 }
