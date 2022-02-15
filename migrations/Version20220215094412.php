@@ -26,6 +26,8 @@ final class Version20220215094412 extends AbstractMigration
                 subject_type VARCHAR(255) NOT NULL,
                 user_info_ip VARCHAR(255) NOT NULL,
                 user_info_user_agent VARCHAR(255) NOT NULL,
+                max_attempts INT NOT NULL,
+                attempts INT NOT NULL,
                 PRIMARY KEY(id))
         ');
     }

@@ -11,6 +11,8 @@ use SunFinanceGroup\Notificator\VerificationService\Exception\DuplicateNonConfir
 
 final class Verifier implements VerifierInterface
 {
+    private const MAX_CONFIRMATION_ATTEMPTS = 5;
+
     public function __construct(
         private VerificationRepositoryInterface $repository,
         private VerificationCodeGeneratorInterface $codeGenerator,
@@ -33,7 +35,8 @@ final class Verifier implements VerifierInterface
             $subject,
             $expiredAt,
             $this->codeGenerator->generate(),
-            $userInfo
+            $userInfo,
+            self::MAX_CONFIRMATION_ATTEMPTS
         );
 
         $this->repository->save($verification);
@@ -44,7 +47,12 @@ final class Verifier implements VerifierInterface
     public function confirm(string $uuid, string $code, UserInfo $userInfo): void
     {
         $verification = $this->repository->get($uuid);
-        $verification->confirmByCodeAndUserInfo($code, $userInfo);
-        $this->repository->save($verification);
+
+        try {
+            $verification->incrementAttempts();
+            $verification->confirmByCodeAndUserInfo($code, $userInfo);
+        } finally {
+            $this->repository->save($verification);
+        }
     }
 }

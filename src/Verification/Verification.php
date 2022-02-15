@@ -28,19 +28,35 @@ class Verification
     private \DateTimeInterface $expiredAt;
     #[Embedded(class: UserInfo::class, columnPrefix: 'user_info_')]
     private UserInfo $userInfo;
+    #[Column(type: 'integer')]
+    private int $maxAttempts;
+    #[Column(type: 'integer')]
+    private int $attempts = 0;
 
-    public function __construct(Subject $subject, \DateTimeInterface $expiredAt, string $code, UserInfo $userInfo)
+    public function __construct(
+        Subject $subject,
+        \DateTimeInterface $expiredAt,
+        string $code,
+        UserInfo $userInfo,
+        int $maxAttempts
+    )
     {
         $this->id = Uuid::uuid4()->toString();
         $this->code = $code;
         $this->subject = $subject;
         $this->userInfo = $userInfo;
         $this->expiredAt = $expiredAt;
+        $this->maxAttempts = $maxAttempts;
     }
 
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function incrementAttempts(): void
+    {
+        $this->attempts++;
     }
 
     /**
@@ -60,6 +76,10 @@ class Verification
         }
 
         if ((new \DateTimeImmutable())->getTimestamp() > $this->expiredAt->getTimestamp()) {
+            throw new VerificationExpired();
+        }
+
+        if ($this->attempts > $this->maxAttempts) {
             throw new VerificationExpired();
         }
 
