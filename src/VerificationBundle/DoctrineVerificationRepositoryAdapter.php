@@ -9,6 +9,7 @@ use Doctrine\Persistence\ObjectRepository;
 use SunFinanceGroup\Notificator\Verification\Subject;
 use SunFinanceGroup\Notificator\Verification\Verification;
 use SunFinanceGroup\Notificator\VerificationService\Exception\MultipleVerificationExists;
+use SunFinanceGroup\Notificator\VerificationService\Exception\VerificationNotFoundException;
 use SunFinanceGroup\Notificator\VerificationService\VerificationRepositoryInterface;
 
 final class DoctrineVerificationRepositoryAdapter implements VerificationRepositoryInterface
@@ -46,6 +47,18 @@ final class DoctrineVerificationRepositoryAdapter implements VerificationReposit
         $verification = current($verifications);
         if ($verification === false) {
             return null;
+        }
+
+        return $verification;
+    }
+
+    public function get(string $uuid): Verification
+    {
+        /** @var Verification|null $verification */
+        $verification = $this->doctrineRepo->find($uuid);
+
+        if ($verification === null) {
+            throw new VerificationNotFoundException();
         }
 
         return $verification;

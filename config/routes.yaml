@@ -1,5 +1,6 @@
 api:
-    resource: routes/notificator.yaml
+    resource: routes
+    type: directory
     format: json
 
 kernel:

@@ -45,9 +45,7 @@ services:
     SunFinanceGroup\Notificator\VerificationBundle\VerifierInterface:
         alias: SunFinanceGroup\Notificator\VerificationBundle\VerifiedAdapter
 
-    SunFinanceGroup\Notificator\VerificationBundle\VerifiedAdapter:
-        arguments:
-            $ttlMinutes: '%env(resolve:VERIFICATION_TTL_MINUTES)%'
+    SunFinanceGroup\Notificator\VerificationBundle\VerifiedAdapter: ~
 
     SunFinanceGroup\Notificator\VerificationBundle\Controller\VerificationController:
         tags:
@@ -55,7 +53,10 @@ services:
 
     SunFinanceGroup\Notificator\VerificationService\VerifierInterface:
         alias: SunFinanceGroup\Notificator\VerificationService\Verifier
-    SunFinanceGroup\Notificator\VerificationService\Verifier: ~
+
+    SunFinanceGroup\Notificator\VerificationService\Verifier:
+        arguments:
+            $ttlMinutes: '%env(resolve:VERIFICATION_TTL_MINUTES)%'
 
     SunFinanceGroup\Notificator\VerificationService\VerificationRepositoryInterface:
         alias: SunFinanceGroup\Notificator\VerificationBundle\DoctrineVerificationRepositoryAdapter

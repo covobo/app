@@ -1,0 +1,4 @@
+template.render:
+  path: /templates/render
+  controller: 'SunFinanceGroup\Notificator\TemplateBundle\Controller\TemplateController::render'
+  methods: [ POST ]

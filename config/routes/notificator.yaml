@@ -1,9 +1,0 @@
-notificator.render_template:
-  path: /templates/render
-  controller: 'SunFinanceGroup\Notificator\TemplateBundle\Controller\TemplateController::render'
-  methods: post
-
-verificator.create:
-  path: /verifications
-  controller: 'SunFinanceGroup\Notificator\VerificationBundle\Controller\VerificationController::create'
-  methods: post

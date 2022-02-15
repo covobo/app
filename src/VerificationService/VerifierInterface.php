@@ -13,7 +13,7 @@ interface VerifierInterface
      *
      * @throws DuplicateNonConfirmedVerifications
      */
-    public function createForSubject(Subject $subject, \DateTimeInterface $dateTime, array $userInfo): Verification;
+    public function createForSubject(Subject $subject, array $userInfo): Verification;
 
-    public function confirm(Verification $verification, string $code): void;
+    public function confirm(string $uuid, string $code): void;
 }

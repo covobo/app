@@ -12,12 +12,13 @@ final class Verifier implements VerifierInterface
 {
     public function __construct(
         private VerificationRepositoryInterface $repository,
-        private VerificationCodeGeneratorInterface $codeGenerator
+        private VerificationCodeGeneratorInterface $codeGenerator,
+        private int $ttlMinutes
     )
     {
     }
 
-    public function createForSubject(Subject $subject, \DateTimeInterface $dateTime, array $userInfo): Verification
+    public function createForSubject(Subject $subject, array $userInfo): Verification
     {
         $verification = $this->repository->findNonConfirmedForSubject($subject);
 
@@ -25,15 +26,24 @@ final class Verifier implements VerifierInterface
             throw new DuplicateNonConfirmedVerifications('Duplicated verification');
         }
 
-        $verification = new Verification($subject, $dateTime, $this->codeGenerator->generate(), $userInfo);
+        $expiredAt = (new \DateTime())->modify(sprintf('+%dminutes', $this->ttlMinutes));
+
+        $verification = new Verification(
+            $subject,
+            $expiredAt,
+            $this->codeGenerator->generate(),
+            $userInfo
+        );
+
         $this->repository->save($verification);
 
         return $verification;
     }
 
-    public function confirm(Verification $verification, string $code): void
+    public function confirm(string $uuid, string $code): void
     {
+        $verification = $this->repository->get($uuid);
         $verification->confirmByCode($code);
-
+        $this->repository->save($verification);
     }
 }

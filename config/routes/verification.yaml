@@ -1,0 +1,11 @@
+verificator.create:
+  path: /verifications
+  controller: 'SunFinanceGroup\Notificator\VerificationBundle\Controller\VerificationController::create'
+  methods: [ POST ]
+
+verificator.confirm:
+  path: /verifications/{uuid}/confirm
+  requirements:
+    uuid: .+
+  controller: 'SunFinanceGroup\Notificator\VerificationBundle\Controller\VerificationController::confirm'
+  methods: [ PUT ]
