@@ -6,10 +6,9 @@ namespace SunFinanceGroup\Notificator\App\JsonAPI\Adapters\JMS;
 
 use JMS\Serializer\Exception\NonCastableTypeException;
 use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
 use Metadata\MetadataFactoryInterface;
-use SunFinanceGroup\Notificator\App\JsonApi\Adapters\Exception\InvalidParametersException;
+use SunFinanceGroup\Notificator\App\JsonAPI\Adapters\Exception\InvalidParametersException;
 use SunFinanceGroup\Notificator\App\JsonAPI\Adapters\Exception\MalformedJsonException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;

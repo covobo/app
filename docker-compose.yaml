@@ -27,6 +27,8 @@ services:
         condition: service_healthy
       database:
         condition: service_healthy
+    env_file:
+      - .env
     entrypoint: >
       /bin/sh -c "
       bin/console messenger:consume async -vv
